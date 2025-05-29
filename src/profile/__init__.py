@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-profile_bp = Blueprint("profile page", __name__)
+bp = Blueprint("profile page", __name__)
 
-from profile import info
+from profile import info, register

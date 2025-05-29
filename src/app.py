@@ -1,16 +1,20 @@
 from flask import Flask
-from profile import profile_bp
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object("config.Config")
 
-app.register_blueprint(profile_bp)
 db = SQLAlchemy(app)
+
+import models
 
 with app.app_context():
     db.drop_all()
     db.create_all()
+
+from profile import bp as profile_bp
+
+app.register_blueprint(profile_bp)
 
 
 @app.route("/")

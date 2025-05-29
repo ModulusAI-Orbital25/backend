@@ -1,6 +1,6 @@
-from profile import profile_bp
+from profile import bp
 
 
-@profile_bp.route("/profile/<int:user_id>")
+@bp.route("/profile/<int:user_id>")
 def profile(user_id):
     return f"User ID: {user_id}"

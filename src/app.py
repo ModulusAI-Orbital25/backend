@@ -1,11 +1,11 @@
 from flask import Flask
-from profile import profile_page
+from profile import profile_bp
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object("config.Config")
 
-app.register_blueprint(profile_page)
+app.register_blueprint(profile_bp)
 db = SQLAlchemy(app)
 
 with app.app_context():

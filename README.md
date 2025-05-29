@@ -2,7 +2,9 @@
 
 ## Running instructions
 
-Run the following command:
+First, setup the environment variables. An example is given in `.env.example`.
+
+Then, run the following command:
 
 ```bash
 docker compose up -d

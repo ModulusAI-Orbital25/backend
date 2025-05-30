@@ -1,6 +1,6 @@
 from flask import request
 from app import db
-from profile import bp
+from profile import bp # type: ignore
 from models import User
 
 

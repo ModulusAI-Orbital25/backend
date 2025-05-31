@@ -1,13 +1,15 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_login import LoginManager
 
 
 app = Flask(__name__)
-CORS(app)  
-app.config.from_object("config.Config") 
+CORS(app)
+app.config.from_object("config.Config")
 
 db = SQLAlchemy(app)
+login_manager = LoginManager(app)
 
 import models
 
@@ -18,6 +20,10 @@ with app.app_context():
 from profile import bp as profile_bp
 
 app.register_blueprint(profile_bp)
+
+from auth import bp as auth_bp
+
+app.register_blueprint(auth_bp)
 
 
 @app.route("/")

@@ -14,11 +14,11 @@ def load_user(user_id):
 def login():
     try:
         username = request.get_json().get("username")
-        # TODO: Add password field + check for password
+        password = request.get_json().get("password")
 
         user = User.query.filter_by(name=username).first()
 
-        if not user:
+        if (not user) or (not user.check_password(password)):
             flash("Wrong login details")
             return redirect(url_for("auth_page.login"))
 

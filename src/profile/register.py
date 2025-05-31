@@ -16,7 +16,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        return jsonify({"message": "User created", "user": new_user.id}), 201
+        return jsonify({"redirect" : url_for("index")})
 
     except Exception as e:
         print("Error:", str(e))

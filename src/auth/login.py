@@ -3,7 +3,7 @@ from flask_login import login_user
 from app import login_manager
 from auth import bp
 from models import User
-
+import traceback
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -26,5 +26,5 @@ def login():
         return redirect(url_for("index"))
 
     except Exception as e:
-        print("Error:", str(e))
+        traceback.print_exc()
         return jsonify({"error": "Server error", "details": str(e)}), 500

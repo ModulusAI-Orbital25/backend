@@ -20,10 +20,10 @@ def login():
 
         if (not user) or (not user.check_password(password)):
             flash("Wrong login details")
-            return redirect(url_for("auth_page.login"))
+            return jsonify({"redirect" : url_for("auth_page.login")})
 
         login_user(user=user)
-        return redirect(url_for("index"))
+        return jsonify({"redirect" : url_for("index")})
 
     except Exception as e:
         traceback.print_exc()

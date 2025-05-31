@@ -7,9 +7,9 @@ class User(UserMixin, db.Model):
     __tablename__ = "users"
 
     id = db.Column("id", db.Integer, primary_key=True)
-    name = db.Column("username", db.String(50), nullable=False)
+    name = db.Column("username", db.String(50), nullable=False, unique=True)
     display_name = db.Column("display_name", db.String(100), nullable=False)
-    password_hash = db.Column("password", db.String(128), nullable=False)
+    password_hash = db.Column("password", db.String(162), nullable=False)
 
     def serialize(self):
         return {"id": self.id, "name": self.name, "display": self.display_name}

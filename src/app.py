@@ -6,8 +6,6 @@ from flask_login import LoginManager
 app = Flask(__name__)
 CORS(app)
 app.config.from_object("config.Config")
-app.debug = True
-app.secret_key = "modulusai"
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)

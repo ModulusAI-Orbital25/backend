@@ -9,3 +9,5 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = (
         f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@db:5432/{POSTGRES_DB}"
     )
+
+    SECRET_KEY = environ.get("SECRET_KEY")

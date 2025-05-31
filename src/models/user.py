@@ -14,7 +14,7 @@ class User(UserMixin, db.Model):
     def serialize(self):
         return {"id": self.id, "name": self.name, "display": self.display_name}
 
-    def save_password(self, password_raw):
+    def set_password(self, password_raw):
         self.password_hash = generate_password_hash(password_raw)
 
     def check_password(self, password_raw):

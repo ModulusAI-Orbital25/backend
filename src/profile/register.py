@@ -2,6 +2,8 @@ from flask import request, jsonify
 from app import db
 from profile import bp  # type: ignore
 from models import User
+from flask import url_for
+import traceback
 
 
 @bp.route("/profile/register", methods=["POST"])
@@ -19,5 +21,5 @@ def register():
         return jsonify({"redirect" : url_for("index")})
 
     except Exception as e:
-        print("Error:", str(e))
+        traceback.print_exc()
         return jsonify({"error": "Server error", "details": str(e)}), 500

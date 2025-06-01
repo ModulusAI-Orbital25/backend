@@ -1,9 +1,15 @@
 from flask import request, jsonify, redirect, url_for, flash
-from flask_login import login_user
+from flask_login import login_user, current_user, login_required
 from app import login_manager
 from auth import bp
 from models import User
 import traceback
+
+@bp.route("/me", methods=["GET"])
+def me():
+    if current_user.is_authenticated:
+        return jsonify({"logged_in": True, "username": current_user.name})
+    return jsonify({"logged_in": False})
 
 @login_manager.user_loader
 def load_user(user_id):

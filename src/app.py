@@ -4,8 +4,10 @@ from flask_cors import CORS
 from flask_login import LoginManager
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 app.config.from_object("config.Config")
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = False  
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)

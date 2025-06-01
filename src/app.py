@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask_login import LoginManager
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 app.config.from_object("config.Config")
 
 db = SQLAlchemy(app)

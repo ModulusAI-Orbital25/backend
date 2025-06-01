@@ -1,4 +1,5 @@
-from flask import request, jsonify
+from flask import request, jsonify, url_for
+from flask_login import login_user
 from app import db
 from profile import bp  # type: ignore
 from models import User
@@ -18,7 +19,9 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        return jsonify({"redirect" : url_for("index")})
+        login_user(user=new_user)
+
+        return jsonify({"redirect": url_for("index")})
 
     except Exception as e:
         traceback.print_exc()

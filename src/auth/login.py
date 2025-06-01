@@ -1,9 +1,10 @@
-from flask import request, jsonify, redirect, url_for, flash
+from flask import request, jsonify, url_for
 from flask_login import login_user
 from app import login_manager
 from auth import bp
 from models import User
 import traceback
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -19,11 +20,10 @@ def login():
         user = User.query.filter_by(name=username).first()
 
         if (not user) or (not user.check_password(password)):
-            flash("Wrong login details")
-            return jsonify({"redirect" : url_for("auth_page.login")})
+            return jsonify({"redirect": url_for("auth_page.login")})
 
         login_user(user=user)
-        return jsonify({"redirect" : url_for("index")})
+        return jsonify({"redirect": url_for("index")})
 
     except Exception as e:
         traceback.print_exc()

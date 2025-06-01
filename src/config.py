@@ -11,3 +11,6 @@ class Config(object):
     )
 
     SECRET_KEY = environ.get("SECRET_KEY")
+
+    SESSION_COOKIE_SAMESITE = "None"
+    SESSION_COOKIE_SECURE = False

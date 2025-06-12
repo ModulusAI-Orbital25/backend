@@ -5,8 +5,6 @@ from flask_login import current_user, login_required
 from chat import bp
 import requests
 
-GROQ_API_KEY = "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"
-
 @bp.route("/chat/groq", methods=["POST", "OPTIONS"])
 def chat():
     if request.method == "OPTIONS": #wasn't being handled by flask-cors

@@ -25,6 +25,10 @@ from auth import bp as auth_bp
 
 app.register_blueprint(auth_bp)
 
+from chat import bp as chat_bp
+
+app.register_blueprint(chat_bp)
+
 
 @app.route("/")
 def index():

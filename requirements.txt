@@ -3,3 +3,4 @@ psycopg2-binary
 Flask-SQLAlchemy
 flask-cors
 flask-login
+requests

@@ -11,6 +11,13 @@ class User(UserMixin, db.Model):
     display_name = db.Column("display_name", db.String(100), nullable=False)
     password_hash = db.Column("password", db.String(162), nullable=False)
 
+    # One-to-one relationship to Academics
+    academics = db.relationship(
+        "Academics",
+        uselist=False,
+        back_populates="user",
+    )
+
     def serialize(self):
         return {"id": self.id, "name": self.name, "display": self.display_name}
 

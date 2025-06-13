@@ -1,18 +1,20 @@
 from flask import request, jsonify
 from app import db
-from models import Academics  
+from models import Academics
 from flask_login import current_user, login_required
 from chat import bp
+from os import environ
 import requests
 
 GROQ_API_KEY = environ.get("GROQ_API_KEY")
 
+
 @bp.route("/chat/groq", methods=["POST", "OPTIONS"])
 def chat():
-    if request.method == "OPTIONS": #wasn't being handled by flask-cors
-        return '', 200
+    if request.method == "OPTIONS":  # wasn't being handled by flask-cors
+        return "", 200
     data = request.get_json()
-    
+
     if not current_user.is_authenticated:
         return jsonify({"error": "Not logged in"}), 401
     user_id = current_user.id
@@ -53,7 +55,10 @@ Based on the above information, respond to this query:
         json={
             "model": "llama3-70b-8192",
             "messages": [
-                {"role": "system", "content": "You are a helpful academic advisor for NUS."},
+                {
+                    "role": "system",
+                    "content": "You are a helpful academic advisor for NUS.",
+                },
                 {"role": "user", "content": prompt},
             ],
             "temperature": 0.7,

@@ -1,5 +1,5 @@
 from app import db
-from models.user_module import completed_modules_table
+from models.academics_module import completed_modules_table
 
 
 class Module(db.Model):
@@ -12,7 +12,7 @@ class Module(db.Model):
 
     # Many-to-many relationship to User
     users_completed = db.relationship(
-        "User",
+        "Academics",
         secondary=completed_modules_table,
         back_populates="completed_modules",
     )

@@ -1,4 +1,5 @@
 from app import db
+from models.academics_module import completed_modules_table
 
 
 class Academics(db.Model):
@@ -17,6 +18,13 @@ class Academics(db.Model):
     user = db.relationship(
         "User",
         back_populates="academics",
+    )
+
+    # Many-to-many relationship to Module
+    completed_modules = db.relationship(
+        "Module",
+        secondary=completed_modules_table,
+        back_populates="users_completed",
     )
 
     def serialize(self):

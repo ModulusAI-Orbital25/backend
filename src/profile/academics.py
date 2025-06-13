@@ -2,21 +2,21 @@ from flask import request, jsonify, url_for
 from models import Academics
 from flask_login import current_user, login_required
 from app import db
-from profile import bp  
+from profile import bp
 import traceback
 
 
 @bp.route("/profile/userProfile", methods=["POST"])
-@login_required 
+@login_required
 def loadAcademics():
     try:
-        user_id = current_user.id  
+        user_id = current_user.id
         data = request.get_json()
 
-        academic = Academics.query.filter_by(user_id=user_id).first()
+        user = User.query.filter_by(id=user_id).first()
 
-        if academic is None:
-            academic = Academics(
+        if user.academics is None:
+            user.academics = Academics(
                 user_id=user_id,
                 primaryMajor=data.get("primaryMajor"),
                 secondaryMajor=data.get("secondaryMajor"),
@@ -26,15 +26,14 @@ def loadAcademics():
                 currentSemester=data.get("currentSemester"),
                 internshipSem=data.get("internshipSem"),
             )
-            db.session.add(academic)
         else:
-            academic.primaryMajor = data.get("primaryMajor")
-            academic.secondaryMajor = data.get("secondaryMajor")
-            academic.minor1 = data.get("minor1")
-            academic.minor2 = data.get("minor2")
-            academic.completedModules = data.get("completedModules")
-            academic.currentSemester = data.get("currentSemester")
-            academic.internshipSem = data.get("internshipSem")
+            user.academics.primaryMajor = data.get("primaryMajor")
+            user.academics.secondaryMajor = data.get("secondaryMajor")
+            user.academics.minor1 = data.get("minor1")
+            user.academics.minor2 = data.get("minor2")
+            user.academics.completedModules = data.get("completedModules")
+            user.academics.currentSemester = data.get("currentSemester")
+            user.academics.internshipSem = data.get("internshipSem")
 
         db.session.commit()
         return jsonify({"redirect": url_for("index")})

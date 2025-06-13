@@ -20,6 +20,13 @@ class User(UserMixin, db.Model):
         back_populates="users_completed",
     )
 
+    # One-to-one relationship to Academics
+    academics = db.relationship(
+        "Academics",
+        uselist=False,
+        back_populates="user",
+    )
+
     def serialize(self):
         return {"id": self.id, "name": self.name, "display": self.display_name}
 

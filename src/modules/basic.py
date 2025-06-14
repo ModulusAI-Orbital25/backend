@@ -8,7 +8,7 @@ ACAD_YEAR = "2024-2025"
 
 
 def load_basic_information():
-    response = requests.get(f"{NUSMODS_API}/{ACAD_YEAR}/moduleList.json")
+    response = requests.get(f"{NUSMODS_API}/{ACAD_YEAR}/moduleInfo.json")
 
     if response.status_code != 200:
         return
@@ -19,6 +19,9 @@ def load_basic_information():
         module = Module(
             code=moduleInfo["moduleCode"],
             title=moduleInfo["title"],
+            description=moduleInfo["description"],
+            credit=float(moduleInfo["moduleCredit"]),
+
         )
 
         db.session.add(module)

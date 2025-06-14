@@ -21,6 +21,7 @@ def load_basic_information():
             title=moduleInfo["title"],
             description=moduleInfo["description"],
             credit=float(moduleInfo["moduleCredit"]),
+
         )
 
         db.session.add(module)

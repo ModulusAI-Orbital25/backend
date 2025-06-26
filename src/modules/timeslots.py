@@ -1,5 +1,4 @@
-from modules.basic import Lesson
-
+Lesson = dict[str, str | int | list[int]]
 Timeslot = tuple[int, int, int]
 
 

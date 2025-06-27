@@ -52,7 +52,7 @@ def load_timetable(moduleCode: str) -> dict[str, dict[str, Timeslots]]:
 
     data = response.json()
     semesterData = data["semesterData"]
-    timetable: Timetable = semesterData[0]["timetable"]
+    timetable: Timetable = semesterData[-1]["timetable"]
 
     return parse_timetable(moduleCode, timetable)
 
@@ -80,9 +80,7 @@ def parse_timetable(moduleCode: str, timetable: Timetable):
     return parsed_timetable
 
 
-@bp.route("/modules/timeslots")
-def get_timeslots_list():
-    modules: list[str] = request.args.getlist("module")
+def get_timeslots_list(modules: list[str]):
     timetables = [load_timetable(module) for module in modules]
 
     total: dict[str, dict[str, Timeslots]] = dict()

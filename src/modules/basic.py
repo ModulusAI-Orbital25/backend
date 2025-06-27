@@ -15,6 +15,7 @@ ACAD_YEAR = "2024-2025"
 Lesson = dict[str, str | int | list[int]]
 Timetable = list[Lesson]
 Timeslot = tuple[int, int, int]
+Timeslots = list[Timeslot]
 
 
 def get_url(path: str) -> str:
@@ -43,7 +44,7 @@ def load_basic_information():
     print("Loaded basic module information")
 
 
-def load_timetable(moduleCode: str) -> dict[str, Timetable]:
+def load_timetable(moduleCode: str) -> dict[str, dict[str, Timeslots]]:
     response = requests.get(get_url(f"/modules/{moduleCode}.json"))
 
     if response.status_code != 200:
@@ -61,15 +62,19 @@ def parse_timetable(moduleCode: str, timetable: Timetable):
     lesson_type_groups: dict[str, Timetable] = defaultdict(list)
     for lesson in timetable:
         assert isinstance(lesson["lessonType"], str)
-        lesson_type_groups[lesson["lessonType"]].append(lesson)
+        lesson_type_groups[f"{moduleCode}/{lesson['lessonType']}"].append(lesson)
 
-    # Split by lessonType/classNo
-    parsed_timetable: dict[str, Timetable] = defaultdict(list)
+    # Split by classNo
+    parsed_timetable: dict[str, dict[str, Timeslots]] = defaultdict(dict)
     for lessonType, group in lesson_type_groups.items():
         for lesson in group:
             assert isinstance(lesson["classNo"], str)
-            parsed_timetable[f"{moduleCode}/{lessonType}/{lesson['classNo']}"].append(
-                lesson
+            classNumber = lesson["classNo"]
+            if classNumber not in parsed_timetable[lessonType]:
+                parsed_timetable[lessonType][classNumber] = []
+
+            parsed_timetable[lessonType][classNumber].extend(
+                lesson_to_timeslots(lesson)
             )
 
     return parsed_timetable
@@ -80,14 +85,8 @@ def get_timeslots_list():
     modules: list[str] = request.args.getlist("module")
     timetables = [load_timetable(module) for module in modules]
 
-    total_timetable: dict[str, Timetable] = dict()
+    total: dict[str, dict[str, Timeslots]] = dict()
     for tt in timetables:
-        total_timetable |= tt
+        total |= tt
 
-    total_timeslots: dict[str, list[Timeslot]] = dict()
-    for code, tt in total_timetable.items():
-        slots = [lesson_to_timeslots(lesson) for lesson in tt]
-        combined_timeslots = [e for slot in slots for e in slot]
-        total_timeslots[code] = combined_timeslots
-
-    return total_timeslots
+    return total

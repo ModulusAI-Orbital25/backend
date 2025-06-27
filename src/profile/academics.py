@@ -22,7 +22,6 @@ def loadAcademics():
                 secondaryMajor=data.get("secondaryMajor"),
                 minor1=data.get("minor1"),
                 minor2=data.get("minor2"),
-                completedModules=data.get("completedModules"),
                 currentSemester=data.get("currentSemester"),
                 internshipSem=data.get("internshipSem"),
             )
@@ -31,22 +30,12 @@ def loadAcademics():
             user.academics.secondaryMajor = data.get("secondaryMajor")
             user.academics.minor1 = data.get("minor1")
             user.academics.minor2 = data.get("minor2")
-            user.academics.completedModules = data.get("completedModules")
             user.academics.currentSemester = data.get("currentSemester")
             user.academics.internshipSem = data.get("internshipSem")
 
         # TODO: remove completedModules from the model
 
         # Parse the module list and add the modules to the user's list
-        modules_list: list[str] = [
-            module.strip() for module in data.get("completedModules").split(",")
-        ]
-
-        filtered_modules: list[Module] = Module.query.filter(
-            Module.code.in_(modules_list)
-        ).all()
-
-        user.academics.completed_modules = filtered_modules
 
         db.session.commit()
         return jsonify({"redirect": url_for("index")})

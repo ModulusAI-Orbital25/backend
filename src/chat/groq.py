@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from app import db
 from models import Academics
+from models.timetable import Timetable
 from flask_login import current_user, login_required
 from chat import bp
 from os import environ
@@ -21,6 +22,7 @@ def chat():
     user_message = data.get("message")
 
     user = db.session.get(Academics, user_id)
+    timetable = Timetable.query.filter_by(user_id=user_id).first()
     if not user:
         return jsonify({"error": "User not found"}), 404
 
@@ -29,7 +31,7 @@ def chat():
     - Secondary Major: {user.secondaryMajor or 'None'}
     - Minor 1: {user.minor1 or 'None'}
     - Minor 2: {user.minor2 or 'None'}
-    - Completed Modules: {user.completedModules or 'None'}
+    - Completed Modules: {timetable.serialize() if timetable else 'None'}
     - Current Semester: {user.currentSemester}
     - Internship Semester: {user.internshipSem or 'Not set'}
     """

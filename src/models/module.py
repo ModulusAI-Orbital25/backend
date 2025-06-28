@@ -1,6 +1,4 @@
 from app import db
-from models.academics_module import completed_modules_table
-
 
 class Module(db.Model):
     __tablename__: str = "modules"
@@ -14,10 +12,3 @@ class Module(db.Model):
     # Prereq tree can be store as text
     # Add other searchable information here
 
-
-    # Many-to-many relationship to User
-    users_completed = db.relationship(
-        "Academics",
-        secondary=completed_modules_table,
-        back_populates="completed_modules",
-    )

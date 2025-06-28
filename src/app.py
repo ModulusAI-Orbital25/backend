@@ -33,6 +33,10 @@ from modules import bp as modules_bp
 
 app.register_blueprint(modules_bp)
 
+from sentiment import bp as sentiment_bp
+
+app.register_blueprint(sentiment_bp)
+
 with app.app_context():
     from modules.basic import load_basic_information
 

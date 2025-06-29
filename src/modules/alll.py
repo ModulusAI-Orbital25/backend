@@ -1,5 +1,5 @@
 from flask import request, jsonify, url_for
-from app import db
+from models import db
 from models import Module
 from modules import bp
 from flask_login import current_user, login_required

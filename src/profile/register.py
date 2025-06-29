@@ -1,6 +1,6 @@
 from flask import request, jsonify, url_for
 from flask_login import login_user
-from app import db
+from models import db
 from profile import bp  # type: ignore
 from models import User
 from flask import url_for

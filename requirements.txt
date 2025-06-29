@@ -8,4 +8,5 @@ numpy==1.26.4
 praw==7.8.1
 transformers==4.40.1
 torch==2.2.2 --index-url https://download.pytorch.org/whl/cpu
-ortools
+ortools==9.14.6206
+pytest==8.4.1

@@ -2,10 +2,12 @@ from flask import Flask
 from flask_cors import CORS
 
 
-def create_app():
+def create_app(extra_config=None):
     app = Flask(__name__)
     CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
     app.config.from_object("config.Config")
+    if extra_config is not None:
+        app.config.update(extra_config)
 
     from auth import login_manager
 

@@ -31,7 +31,7 @@ class Timetable(db.Model):
     def serialize(self):
         return {
             "semesters": [
-                {"semester": i+1, "modules": getattr(self, f"sem{i+1}").split(",") if getattr(self, f"sem{i+1}") else [], "completed": getattr(self, f"completed{i+1}")}
+                {"semester": i+1, "modules": getattr(self, f"sem{i+1}").split(",") if getattr(self, f"sem{i+1}") else [], "completed": getattr(self, f"com{i+1}")}
                 for i in range(8)
             ]
         }

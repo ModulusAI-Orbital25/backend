@@ -1,14 +1,31 @@
 from ortools.sat.python import cp_model
-from flask import request
+from flask import request, jsonify
 from collections import defaultdict
 
 from modules import bp
 from modules.basic import Timeslot, get_timeslots_list
+from flask_login import current_user
+from models.timetable import Timetable
 
 
-@bp.route("/modules/optimizer")
+@bp.route("/modules/optimizer", methods=["GET", "POST"])
 def optimize():
-    modules: list[str] = request.args.getlist("module")
+    timetable: Timetable = Timetable.query.filter_by(user_id=current_user.id).first()
+
+    if not timetable:
+        return "Timetable not found", 404
+
+    for i in range(1, 9):
+        completed = getattr(timetable, f"com{i}")
+        if not completed:
+            modules_str = getattr(timetable, f"sem{i}")
+            break
+    else:
+        return "All semesters completed", 400
+
+    modules = [m.strip() for m in modules_str.split(",") if m.strip()]
+    if not modules:
+        return "No modules in current semester", 400
 
     model = cp_model.CpModel()
 
@@ -37,18 +54,32 @@ def optimize():
     for slot, lst in slots.items():
         _ = model.add_at_most_one(lst)
 
+
     solver = cp_model.CpSolver()
     status = solver.solve(model)
 
-    if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
-        answer: list[str] = []
-        for lessonType, classNumber in variables:
-            if solver.value(variables[(lessonType, classNumber)]):
-                answer.append(f"{lessonType}/{classNumber}")
-        return answer
+    if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        chosen: list[dict] = []
+
+        for (lessonType, classNumber), var in variables.items():
+            if solver.value(var):
+                module, ltype = lessonType.split("/", 1) 
+
+                chosen.append(
+                    {
+                        "module": module,
+                        "lessonType": ltype,
+                        "classNumber": classNumber,
+                        "timeslots": timeslots[lessonType][classNumber],
+                    }
+                )
+
+        return jsonify(chosen), 200
+
     elif status == cp_model.INFEASIBLE:
-        return "Infeasible"
+        return "Infeasible", 409
     elif status == cp_model.MODEL_INVALID:
-        return "Model invalid"
+        return "Model invalid", 500
     else:
-        return "???"
+        return "Unknown error", 500
+

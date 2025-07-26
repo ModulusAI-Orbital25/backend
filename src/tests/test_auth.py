@@ -22,3 +22,12 @@ def test_logged_in(client, auth):
     response = client.get("/me")
     assert response.json["logged_in"] == True
     assert response.json["username"] == "test"
+
+
+def test_double_register(client, auth):
+    assert auth.register().status_code == 200
+    assert auth.register("test2", "password").status_code == 200
+
+    response = client.get("/me")
+    assert response.status_code == 200
+    assert response.json["username"] == "test2"

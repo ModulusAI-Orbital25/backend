@@ -1,5 +1,5 @@
 from models.module import Module
-from app import app
+from modules import bp
 
 
 class Category:
@@ -18,7 +18,7 @@ class Category:
 
     @staticmethod
     def from_prefix(prefix: str, credit: int = 4):
-        def chk(m: list[Module]) -> bool:
+        def chk(m: list[Module]):
             return (
                 len(m) == 1 and m[0].code.startswith(prefix) and m[0].credit == credit
             )
@@ -77,8 +77,8 @@ cd_courses = [
 
 
 def idcd_check(courses: list[Module]):
-    id_learnt = [m for m in courses if m in id_courses]
-    cd_learnt = [m for m in courses if m in cd_courses]
+    id_learnt = [m for m in courses if m.code in id_courses]
+    cd_learnt = [m for m in courses if m.code in cd_courses]
     total_credit = sum(m.credit for m in id_learnt) + sum(m.credit for m in cd_learnt)
     return total_credit == 12 and len(cd_learnt) <= 1
 
@@ -113,9 +113,9 @@ def breadth_and_depth_check(courses: list[Module]):
 
     def check_prefix_code(course):
         return (
-            course.startswith("CS")
-            or course.startswith("IFS")
-            or course.startswith("CP")
+            course.code.startswith("CS")
+            or course.code.startswith("IFS")
+            or course.code.startswith("CP")
         )
 
     if any(not check_prefix_code(m) for m in courses):
@@ -135,11 +135,11 @@ def breadth_and_depth_check(courses: list[Module]):
 
     focus_check = False
     for area in focus_areas:
-        focus_courses = [m for m in courses if m in area]
+        focus_courses = [m for m in courses if m.code in area]
         valid = True
         if len(focus_courses) < 3:
             valid = False
-        if max(get_level(m) for m in focus_courses) < 4:
+        elif max(get_level(m) for m in focus_courses) < 4:
             valid = False
         if valid:
             focus_check = True
@@ -179,7 +179,7 @@ categories = [
     Category(electives_check),
 ]
 
-courses_code = [
+sample_courses_code = [
     ["CS1101S"],
     ["ES2660"],
     ["GEC1007"],
@@ -215,14 +215,20 @@ courses_code = [
     ],
 ]
 
-with app.app_context():
+
+@bp.route("/modules/requirements")
+def degree_requirements():
+    courses_code = sample_courses_code
+
     courses = [
         [Module.query.filter_by(code=code).first() for code in code_list]
         for code_list in courses_code
     ]
 
+    message = ""
+
     for i in range(len(categories)):
-        print(
-            f"DEBUG: Category #{i + 1}, courses_code = f{courses_code[i]}, courses = {courses[i]}"
-        )
-        print(f"verdict = {categories[i].verify(courses[i])}")
+        message += f"DEBUG: Category #{i + 1}, courses_code = f{courses_code[i]}, courses = {courses[i]}\n"
+        message += f"verdict = {categories[i].verify(courses[i])}\n"
+
+    return message

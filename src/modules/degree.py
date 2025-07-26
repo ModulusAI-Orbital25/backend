@@ -1,3 +1,4 @@
+from flask import request, jsonify
 from models.module import Module
 from modules import bp
 
@@ -216,19 +217,28 @@ sample_courses_code = [
 ]
 
 
-@bp.route("/modules/requirements")
+@bp.route("/modules/requirements", methods=["POST"])
 def degree_requirements():
-    courses_code = sample_courses_code
+    try:
+        # courses_code = sample_courses_code
+        courses_code = request.get_json().get("courses")
 
-    courses = [
-        [Module.query.filter_by(code=code).first() for code in code_list]
-        for code_list in courses_code
-    ]
+        courses = [
+            [Module.query.filter_by(code=code).first() for code in code_list]
+            for code_list in courses_code
+        ]
 
-    message = ""
+        status = True
 
-    for i in range(len(categories)):
-        message += f"DEBUG: Category #{i + 1}, courses_code = f{courses_code[i]}, courses = {courses[i]}\n"
-        message += f"verdict = {categories[i].verify(courses[i])}\n"
+        for i in range(len(categories)):
+            if not categories[i].verify(courses[i]):
+                status = False
 
-    return message
+        return jsonify({"message": status})
+    except Exception:
+        return jsonify(
+            {
+                "error": "Server error",
+                "details": "Degree requirements calculation failed",
+            }
+        ), 500

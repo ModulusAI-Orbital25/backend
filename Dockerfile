@@ -18,3 +18,4 @@ COPY . .
 EXPOSE 5000
 
 CMD ["flask", "--app", "src/app", "run", "--host=0.0.0.0"]
+# CMD ["pytest"]

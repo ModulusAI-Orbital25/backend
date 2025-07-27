@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from app import db
+from models import db
 from models import Academics
 from models.timetable import Timetable
 from flask_login import current_user, login_required

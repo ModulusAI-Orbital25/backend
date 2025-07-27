@@ -1,7 +1,7 @@
 from flask import request, jsonify, url_for
 from models import Academics, Module, User
 from flask_login import current_user, login_required
-from app import db
+from models import db
 from profile import bp
 import traceback
 

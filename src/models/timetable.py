@@ -1,5 +1,5 @@
 
-from app import db
+from models import db
 from models.academics import Academics 
 
 class Timetable(db.Model):

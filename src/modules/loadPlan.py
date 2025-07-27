@@ -1,5 +1,5 @@
 from flask import request, jsonify, url_for
-from app import db
+from models import db
 from models import Academics, Module
 from models.timetable import Timetable
 from modules import bp

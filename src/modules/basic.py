@@ -1,6 +1,6 @@
 import requests
 
-from app import db
+from models import db
 from models import Module
 from typing import Any
 from collections import defaultdict

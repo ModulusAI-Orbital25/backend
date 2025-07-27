@@ -156,28 +156,46 @@ def electives_check(courses: list[Module]):
 
 
 categories = [
-    Category.from_courses(["CS1101S"]),
-    Category.from_courses(["ES2660"]),
-    Category.from_prefix("GEC"),
-    Category.from_courses(["GEA1000", "BT1101", "ST1131", "DSA1101"]),
-    Category.from_prefix("GES"),
-    Category.from_prefix("GEN"),
-    Category.from_courses(["IS1108"]),
-    Category(idcd_check),
-    Category.from_courses(["CS1231S"]),
-    Category.from_courses(["CS2030S"]),
-    Category.from_courses(["CS2040S"]),
-    Category.from_courses(["CS2100"]),
-    Category.from_courses(["CS2101"]),
-    Category.from_courses(["CS2103T"]),
-    Category.from_courses(["CS2106"]),
-    Category.from_courses(["CS2109S"]),
-    Category.from_courses(["CS3230"]),
-    Category(breadth_and_depth_check),
-    Category.from_courses(["MA1521"]),
-    Category.from_courses(["MA1522"]),
-    Category.from_courses(["ST2334"]),
-    Category(electives_check),
+    (
+        Category.from_courses(["CS1101S"]),
+        "Digital Literacy - CS1101S Programming Methodology",
+    ),
+    (
+        Category.from_courses(["ES2660"]),
+        "Critique and Expression - ES2660 Communicating in the Information Age",
+    ),
+    (Category.from_prefix("GEC"), "Cultures and Connections - GEC%"),
+    (
+        Category.from_courses(["GEA1000", "BT1101", "ST1131", "DSA1101"]),
+        "Data Literacy - Either GEA1000, BT1101, ST1131 or DSA1101",
+    ),
+    (Category.from_prefix("GES"), "Singapore Studies - GES%"),
+    (Category.from_prefix("GEN"), "Communities and Engagement - GEN%"),
+    (
+        Category.from_courses(["IS1108"]),
+        "Computing Ethics - IS1108 Digital Ethics and Data Privacy",
+    ),
+    (Category(idcd_check), "Interdisciplinary & Cross-Disciplinary Education"),
+    (Category.from_courses(["CS1231S"]), "CS1231S Discrete Structures"),
+    (Category.from_courses(["CS2030S"]), "CS2030S Programming Methodology II"),
+    (Category.from_courses(["CS2040S"]), "CS2040S Data Structures and Algorithms"),
+    (Category.from_courses(["CS2100"]), "CS2100 Computer Organisation"),
+    (
+        Category.from_courses(["CS2101"]),
+        "CS2101 Effective Communication for Computing Professionals",
+    ),
+    (Category.from_courses(["CS2103T"]), "CS2103T Software Engineering"),
+    (Category.from_courses(["CS2106"]), "CS2106 Introduction to Operating Systems"),
+    (
+        Category.from_courses(["CS2109S"]),
+        "CS2109S Introduction to AI and Machine Learning",
+    ),
+    (Category.from_courses(["CS3230"]), "CS3230 Design and Analysis of Algorithms"),
+    (Category(breadth_and_depth_check), "Computer Science Breadth and Depth"),
+    (Category.from_courses(["MA1521"]), "MA1521 Calculus for Computing"),
+    (Category.from_courses(["MA1522"]), "MA1522 Linear Algebra for Computing"),
+    (Category.from_courses(["ST2334"]), "ST2334 Probability and Statistics"),
+    (Category(electives_check), "Unrestricted Electives"),
 ]
 
 sample_courses_code = [
@@ -217,8 +235,11 @@ sample_courses_code = [
 ]
 
 
-@bp.route("/modules/requirements", methods=["POST"])
+@bp.route("/modules/requirements", methods=["GET", "POST"])
 def degree_requirements():
+    if request.method == "GET":
+        return jsonify({"categories": [c[1] for c in categories]})
+
     try:
         # courses_code = sample_courses_code
         courses_code = request.get_json().get("courses")
@@ -231,7 +252,7 @@ def degree_requirements():
         status = True
 
         for i in range(len(categories)):
-            if not categories[i].verify(courses[i]):
+            if not categories[i][0].verify(courses[i]):
                 status = False
 
         return jsonify({"message": status})

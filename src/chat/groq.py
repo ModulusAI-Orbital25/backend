@@ -55,7 +55,7 @@ Based on the above information, respond to this query:
 
     res = requests.post(
         "https://api.groq.com/openai/v1/chat/completions",
-        headers={"Authorization": f"Bearer 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"},
+        headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
         json={
             "model": "llama3-70b-8192",
             "messages": [

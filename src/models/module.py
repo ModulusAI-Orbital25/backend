@@ -1,5 +1,6 @@
 from models import db
 
+
 class Module(db.Model):
     __tablename__: str = "modules"
 
@@ -11,4 +12,3 @@ class Module(db.Model):
     # Extra information might be stored, including department, faculty, ...
     # Prereq tree can be store as text
     # Add other searchable information here
-

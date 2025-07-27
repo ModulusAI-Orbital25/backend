@@ -10,7 +10,8 @@ import requests
 GROQ_API_KEY = environ.get("GROQ_API_KEY")
 
 
-@bp.route("/chat/groq", methods=["POST", "OPTIONS"])
+@bp.route("/groq", methods=["POST", "OPTIONS"])
+@login_required
 def chat():
     if request.method == "OPTIONS":  # wasn't being handled by flask-cors
         return "", 200
@@ -24,6 +25,7 @@ def chat():
     user = db.session.get(Academics, user_id)
     timetable = Timetable.query.filter_by(user_id=user_id).first()
     if not user:
+        print("User not found")
         return jsonify({"error": "User not found"}), 404
 
     user_context = f"""
@@ -53,7 +55,7 @@ Based on the above information, respond to this query:
 
     res = requests.post(
         "https://api.groq.com/openai/v1/chat/completions",
-        headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
+        headers={"Authorization": f"Bearer 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"},
         json={
             "model": "llama3-70b-8192",
             "messages": [
@@ -72,4 +74,5 @@ Based on the above information, respond to this query:
         return jsonify({"error": "LLM API failed"}), 500
 
     reply = res.json()["choices"][0]["message"]["content"]
+    print("grok error")
     return jsonify({"reply": reply})

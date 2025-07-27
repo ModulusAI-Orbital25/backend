@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 
@@ -32,14 +32,25 @@ def create_app(extra_config=None):
 
     app.register_blueprint(profile_bp)
     app.register_blueprint(auth_bp)
-    app.register_blueprint(chat_bp)
+    app.register_blueprint(chat_bp, url_prefix="/chat")
     app.register_blueprint(modules_bp)
     app.register_blueprint(sentiment_bp)
+
+    print(app.url_map)
 
     with app.app_context():
         from modules.basic import load_basic_information
 
         load_basic_information()
+    
+    @app.errorhandler(404)
+    def handle_404(e):
+        return jsonify({
+            "error": "Not Found",
+            "path": request.path,
+            "method": request.method,
+            "message": f"The endpoint {request.path} does not exist."
+        }), 404
 
     @app.route("/")
     def index():

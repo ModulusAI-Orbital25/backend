@@ -11,23 +11,38 @@ def convert_time(timeValue: str) -> int:
     hour = timeValue[:2]
     return int(hour) - 8
 
+# modules/timeslots.py
 
-def lesson_to_timeslots(lesson: Lesson):
-    dateStr = lesson["day"]
-    startStr = lesson["startTime"]
-    endStr = lesson["endTime"]
-    weeks = lesson["weeks"]
+def lesson_to_timeslots(lesson):
+    # extract raw fields
+    dateStr  = lesson.get("day", "")
+    startStr = lesson.get("startTime", "")
+    endStr   = lesson.get("endTime", "")
+    raw_weeks = lesson.get("weeks", [])
 
-    assert isinstance(dateStr, str)
-    assert isinstance(startStr, str)
-    assert isinstance(endStr, str)
-    assert isinstance(weeks, list)
+    # validate the basics
+    assert isinstance(dateStr, str),    f"Bad day: {dateStr!r}"
+    assert isinstance(startStr, str),   f"Bad startTime: {startStr!r}"
+    assert isinstance(endStr, str),     f"Bad endTime: {endStr!r}"
 
-    dateInt = convert_day(dateStr)
+    # normalize weeks into a list
+    if isinstance(raw_weeks, list):
+        weeks = raw_weeks
+    elif isinstance(raw_weeks, int):
+        weeks = [raw_weeks]
+    else:
+        # whatever unexpected type—treat as no weeks
+        weeks = []
+
+    # now you’re safe to convert
+    dateInt  = convert_day(dateStr)
     startInt = convert_time(startStr)
-    endInt = convert_time(endStr)
+    endInt   = convert_time(endStr)
 
+    # build your timeslots
     timeslots: list[Timeslot] = [
-        (w, dateInt, h) for w in weeks for h in range(startInt, endInt)
+        (w, dateInt, h)
+        for w in weeks
+        for h in range(startInt, endInt)
     ]
     return timeslots

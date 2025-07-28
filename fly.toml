@@ -1,0 +1,22 @@
+# fly.toml app configuration file generated for backend-sparkling-cloud-9951 on 2025-07-28T12:13:49+07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'backend-sparkling-cloud-9951'
+primary_region = 'syd'
+
+[build]
+
+[http_service]
+  internal_port = 5000
+  force_https = true
+  auto_stop_machines = 'off'
+  auto_start_machines = false
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '2gb'
+  cpu_kind = 'shared'
+  cpus = 1

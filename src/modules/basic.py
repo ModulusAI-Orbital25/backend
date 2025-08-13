@@ -30,18 +30,21 @@ def load_basic_information():
 
     data: list[dict[str, Any]] = response.json()
 
-    for moduleInfo in data:
-        module = Module(
-            code=moduleInfo["moduleCode"],
-            title=moduleInfo["title"],
-            description=moduleInfo["description"],
-            credit=float(moduleInfo["moduleCredit"]),
-        )
+    try:
+        for moduleInfo in data:
+            module = Module(
+                code=moduleInfo["moduleCode"],
+                title=moduleInfo["title"],
+                description=moduleInfo["description"],
+                credit=float(moduleInfo["moduleCredit"]),
+            )
 
-        db.session.add(module)
+            db.session.add(module)
 
-    db.session.commit()
-    print("Loaded basic module information")
+        db.session.commit()
+        print("Loaded basic module information")
+    except Exception:
+        pass
 
 
 def load_timetable(moduleCode: str) -> dict[str, dict[str, Timeslots]]:
